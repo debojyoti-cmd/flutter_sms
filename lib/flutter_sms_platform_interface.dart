@@ -24,7 +24,7 @@ abstract class FlutterSmsPlatform extends PlatformInterface {
   }
 
   Future<void> sendSms({
-    required String recepient,
+    required String recipient,
     required String message,
     required int slot,
   }) {

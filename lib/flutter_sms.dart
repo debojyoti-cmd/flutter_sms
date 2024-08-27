@@ -2,12 +2,12 @@ import 'flutter_sms_platform_interface.dart';
 
 class FlutterSms {
   Future<void> sendSms({
-    required String recepient,
+    required String recipient,
     required String message,
     required int slot,
   }) {
     return FlutterSmsPlatform.instance.sendSms(
-      recepient: recepient,
+      recipient: recipient,
       message: message,
       slot: slot,
     );

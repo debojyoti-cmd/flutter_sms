@@ -26,7 +26,7 @@ class _MyAppState extends State<MyApp> {
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             smsHelper.sendSms(
-              recepient: "+918799728754",
+              recipient: "+910123456789",
               message: "Message from slot : $simSlot",
               slot: simSlot,
             );

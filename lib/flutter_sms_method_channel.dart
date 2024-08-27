@@ -11,12 +11,12 @@ class MethodChannelFlutterSms extends FlutterSmsPlatform {
 
   @override
   Future<void> sendSms({
-    required String recepient,
+    required String recipient,
     required String message,
     required int slot,
   }) async {
     await methodChannel.invokeMethod<void>('sendSms', {
-      'recipient': recepient,
+      'recipient': recipient,
       'message': message,
       'slot': slot,
     });
