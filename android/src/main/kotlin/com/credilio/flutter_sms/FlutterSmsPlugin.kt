@@ -50,25 +50,30 @@ class FlutterSmsPlugin: FlutterPlugin, MethodCallHandler {
     val subscriptionManager = context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
     val subscriptionInfoList = subscriptionManager.activeSubscriptionInfoList
 
-    if (subscriptionInfoList != null && simSlot < subscriptionInfoList.size) {
-      val subscriptionInfo = subscriptionInfoList[simSlot]
-      val subscriptionId = subscriptionInfo.subscriptionId
+    if (subscriptionInfoList != null && subscriptionInfoList.isNotEmpty()) {
+      val subscriptionInfo = subscriptionInfoList.find { it.simSlotIndex == simSlot }
+      if (subscriptionInfo != null) {
+        val subscriptionId = subscriptionInfo.subscriptionId
 
-      try {
-        val smsManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-          context.getSystemService(SmsManager::class.java)
-            .createForSubscriptionId(subscriptionId)
-        } else {
-          SmsManager.getSmsManagerForSubscriptionId(subscriptionId)
+        try {
+          val smsManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            context.getSystemService(SmsManager::class.java)
+              .createForSubscriptionId(subscriptionId)
+          } else {
+            SmsManager.getSmsManagerForSubscriptionId(subscriptionId)
+          }
+
+          smsManager.sendTextMessage(recipient, null, message, null, null)
+        } catch (e: Exception) {
+          Log.e("SMS_SEND", "Error sending SMS: ${e.message}")
+          // Handle the exception (e.g., show an error message to the user)
         }
-
-        smsManager.sendTextMessage(recipient, null, message, null, null)
-      } catch (e: Exception) {
-        Log.e("SMS_SEND", "Error sending SMS: ${e.message}")
-        // Handle the exception (e.g., show an error message to the user)
+      } else {
+        Log.e("SMS_SEND", "SIM slot $simSlot not found")
+        // Handle the error (e.g., show an error message to the user)
       }
     } else {
-      Log.e("SMS_SEND", "Invalid SIM slot or no SIM available")
+      Log.e("SMS_SEND", "No active SIM cards available")
       // Handle the error (e.g., show an error message to the user)
     }
   }
